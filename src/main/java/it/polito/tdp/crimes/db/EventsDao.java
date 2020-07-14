@@ -56,5 +56,96 @@ public class EventsDao {
 			return null ;
 		}
 	}
+	
+	public List<Integer> getAnni(){
+		String sql= "SELECT DISTINCT(YEAR(reported_date)) AS anno FROM events";
+		List<Integer> result = new ArrayList<Integer>();
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			ResultSet res = st.executeQuery();
+			
+			while (res.next())
+			{
+				result.add(res.getInt("anno"));
+			}
+			conn.close();
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<Integer> getVertici(){
+		String sql= "SELECT DISTINCT(district_id) AS vertici FROM events";
+		List<Integer> result = new ArrayList<Integer>();
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			ResultSet res = st.executeQuery();
+			
+			while (res.next())
+			{
+				result.add(res.getInt("vertici"));
+			}
+			conn.close();
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+
+	public Double getLatMedia(Integer anno, Integer district) {
+		String sql = "SELECT AVG(geo_lat) as lat FROM events WHERE YEAR(reported_date) = ? AND district_id = ?";
+		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, anno);
+			st.setInt(2, district);
+			ResultSet res = st.executeQuery();
+			
+			if(res.next())
+			{
+				conn.close();
+				return res.getDouble("lat");
+			}
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+	
+	public Double getlongMedia(Integer anno, Integer district) {
+		String sql = "SELECT AVG(geo_lon) as lon FROM events WHERE YEAR(reported_date) = ? AND district_id = ?";
+		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, anno);
+			st.setInt(2, district);
+			ResultSet res = st.executeQuery();
+			
+			if(res.next())
+			{
+				conn.close();
+				return res.getDouble("lon");
+			}
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
 
 }
